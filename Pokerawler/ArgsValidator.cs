@@ -2,9 +2,9 @@
 
 public static class ArgsValidator
 {
-    public static (bool valid, Uri uri) Validate(string[] args)
+    public static (bool valid, List<Uri> uri) Validate(string[] args)
     {
-        var uri = new Uri("https://example.com");
+        var uri = new List<Uri>();
         var valid = true;
         if (args.Length != 1)
         {
@@ -24,9 +24,9 @@ public static class ArgsValidator
         }
     }
     
-    public static (bool valid, Uri uri) Validate(string arg)
+    public static (bool valid, List<Uri> uri) Validate(string arg)
     {
-        var uri = new Uri("https://example.com");
+        var uri = new List<Uri>();
         var valid = true;
         
             var argIsValidUri = Uri.TryCreate(arg, UriKind.Absolute, out var tempUri);
@@ -36,8 +36,8 @@ public static class ArgsValidator
             }
             else
             {
-                uri = tempUri!;
-                var hostIsPokelektor = uri.Host.Contains("pokellector");
+                var hostIsPokelektor = tempUri!.Host.Contains("pokellector");
+                uri = new List<Uri>{tempUri};
                 if (!hostIsPokelektor)
                 {
                     SetValidAndPrint(false, "Can only parse pokelektor links");

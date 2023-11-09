@@ -3,7 +3,8 @@
 using Pokerawler;
 
 var argIsAccepted = false;
-var validationResult = (false, new Uri("https://example.com"));
+var validationResult = (false, new List<Uri>{new ("https://example.com")});
+var downloader = new Downloader();
 
 if (args.Any())
 {
@@ -13,17 +14,21 @@ else
 {
     while (!argIsAccepted)
     {
-        Console.WriteLine("Input pokellector link");
+        Console.WriteLine("Input pokellector link or press 1 to download all sets");
         var input = Console.ReadLine();
+
+        if ((input ?? string.Empty) == "1")
+        {
+            Console.WriteLine("Downloading all sets!");
+
+            downloader.DownloadAll();
+            
+            return;
+        }
         
         validationResult = ArgsValidator.Validate(input ?? string.Empty);
         argIsAccepted = validationResult.Item1;
     }
 }
 
-if (!validationResult.Item1) return;
-
-var extrator = new PokellektorExtrator();
-var resultingPokemon = extrator.PerformWork(validationResult.Item2);
-
-PokemonToCsvSaver.Persist(resultingPokemon);
+downloader.DownloadSingle(validationResult.Item2.Single());

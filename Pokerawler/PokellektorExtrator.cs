@@ -5,13 +5,13 @@ namespace Pokerawler;
 
 public class PokellektorExtrator
 {
-    private readonly HttpClient httpClient = new ();
+    private readonly HttpClient _httpClient = new ();
     
-    public List<Pokemon> PerformWork(Uri uri)
+    public List<Pokemon> DownloadSetFromUri(Uri uri)
     {
         var result = new List<Pokemon>();
         
-        var html = httpClient.GetStringAsync(uri).Result;
+        var html = _httpClient.GetStringAsync(uri).Result;
         var htmlDoc = new HtmlDocument();
         htmlDoc.LoadHtml(html);
         var list = htmlDoc.DocumentNode.SelectNodes("//div[contains(@class, 'plaque')]");
@@ -26,4 +26,11 @@ public class PokellektorExtrator
 
         return result;
     }
+
+    public List<(string name, Uri uri)> DownloadSetData()
+    {
+        
+        
+        return new List<(string name, Uri uri)>();
+    } 
 }
