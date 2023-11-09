@@ -6,6 +6,7 @@ namespace Pokerawler;
 public class PokellektorExtrator
 {
     private readonly HttpClient _httpClient = new ();
+    private readonly Uri _pokellectorSetUrl = new ("https://www.pokellector.com/sets");
     
     public List<Pokemon> DownloadSetFromUri(Uri uri)
     {
@@ -19,6 +20,8 @@ public class PokellektorExtrator
         {
             var info = element.InnerHtml;
             var parts = info.Split('-');
+            if (parts.Length != 2) continue;
+            
             var number = parts[0].Trim();
             var name = parts[1].Trim();
             result.Add(new Pokemon(number, name));
@@ -29,8 +32,22 @@ public class PokellektorExtrator
 
     public List<(string name, Uri uri)> DownloadSetData()
     {
-        
-        
-        return new List<(string name, Uri uri)>();
+        var result = new List<(string name, Uri uri)>();
+        var html = _httpClient.GetStringAsync(_pokellectorSetUrl).Result;
+        var htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(html);
+        var setGroupings = htmlDoc.DocumentNode.SelectNodes("//div[contains(@class, 'buttonlisting')]");
+        foreach (var setGroup in setGroupings)
+        {
+            var sets = setGroup.Descendants().Where(d => d.HasClass("button"));
+            foreach (var set in sets)
+            {
+                var name = set.InnerText;
+                var href = set.Attributes.Single(a => a.Name == "href").Value;
+                var link = new Uri($"https://www.pokellector.com{href}");
+                result.Add((name, link));
+            }
+        }
+        return result;
     } 
 }
