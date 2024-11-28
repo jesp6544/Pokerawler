@@ -3,10 +3,7 @@
 public class Downloader
 {
     private readonly PokellektorExtrator _extrator = new ();
-    
-    public Downloader()
-    {
-    }
+
 
     public void DownloadAll()
     {

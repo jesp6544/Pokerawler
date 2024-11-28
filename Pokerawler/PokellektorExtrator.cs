@@ -19,11 +19,10 @@ public class PokellektorExtrator
         foreach (var element in list)
         {
             var info = element.InnerHtml;
-            var parts = info.Split('-');
-            if (parts.Length != 2) continue;
+            var indexOfSpace = info.IndexOf(' ');
+            var number = info.Substring(0, indexOfSpace);
+            var name = info.Substring(indexOfSpace + 3);
             
-            var number = parts[0].Trim();
-            var name = parts[1].Trim();
             result.Add(new Pokemon(number, name));
         }
 
